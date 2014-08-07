@@ -7,6 +7,8 @@ import java.beans.PropertyChangeSupport;
 
 public class StopWatch {
 
+    public static final String ELAPSED_TIME_PROPERTY = "elapsedTime";
+
     private double targetTime;
     private double startTime;
     private double elapsedTime;
@@ -59,7 +61,7 @@ public class StopWatch {
     public void setElapsedTime(double elapsedTime) {
         double oldElapsedTime = this.elapsedTime;
         this.elapsedTime = elapsedTime;
-        this.propertyChangeSupport.firePropertyChange("elapsedTime", oldElapsedTime, elapsedTime);
+        this.propertyChangeSupport.firePropertyChange(ELAPSED_TIME_PROPERTY, oldElapsedTime, elapsedTime);
     }
 
     public double getDifferenceFromTarget() {

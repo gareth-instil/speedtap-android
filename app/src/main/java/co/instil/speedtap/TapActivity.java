@@ -14,11 +14,21 @@ import java.beans.PropertyChangeListener;
 
 public class TapActivity extends Activity {
 
-    private StopWatch stopWatch = new StopWatch(5000);
+    private StopWatch stopWatch;
     private Button goButton;
     private Button stopButton;
     private TextView elapsedTimeLabel;
     private TextView resultsLabel;
+
+    private PropertyChangeListener elapsedTimeListener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent event) {
+            if (event.getPropertyName().equals(StopWatch.ELAPSED_TIME_PROPERTY)) {
+                double elapsedTime = (Double) event.getNewValue();
+                elapsedTimeLabel.setText(String.format("%.2f", elapsedTime));
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +56,15 @@ public class TapActivity extends Activity {
         });
         elapsedTimeLabel = (TextView) findViewById(R.id.elapsedTimeLabel);
         resultsLabel = (TextView) findViewById(R.id.resultsLabel);
-        observeElapsedTime();
+        stopWatch = new StopWatch(5000);
+        stopWatch.addPropertyChangeListener(elapsedTimeListener);
     }
 
     private void displayResult() {
         double timeDifference = stopWatch.getDifferenceFromTarget();
         String resultText;
         if (timeDifference == 0) {
-            resultText = "Well done !!!";
+            resultText = "On the nose !!!";
         }
         else {
             String suffix = (timeDifference < 0) ? "late" : "early";
@@ -61,18 +72,6 @@ public class TapActivity extends Activity {
         }
         resultsLabel.setText(resultText);
         resultsLabel.setVisibility(View.VISIBLE);
-    }
-
-    private void observeElapsedTime() {
-        stopWatch.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                if (event.getPropertyName().equals("elapsedTime")) {
-                    double elapsedTime = (Double) event.getNewValue();
-                    elapsedTimeLabel.setText(String.format("%.2f", elapsedTime));
-                }
-            }
-        });
     }
 
 }
